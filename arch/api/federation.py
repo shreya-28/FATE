@@ -44,11 +44,18 @@ def init(job_id, runtime_conf, server_conf_path="arch/conf/server_conf.json"):
         raise EnvironmentError("eggroll should be initialized before federation")
     if RuntimeInstance.MODE == WorkMode.STANDALONE:
         RuntimeInstance.FEDERATION = standalone_federation.init(job_id=job_id, runtime_conf=runtime_conf)
-    else:
+    elif RuntimeInstance.MODE == WorkMode.CLUSTER:
         RuntimeInstance.FEDERATION = cluster_federation.init(job_id=job_id, runtime_conf=runtime_conf,
                                                              server_conf_path=server_conf_path)
-
-
+    elif RuntimeInstance.MODE == WorkMode.PYSPARKSTANDALONE:
+        from arch.api.pyspark.standalone import federation as pysparkstandalone_federation
+        RuntimeInstance.FEDERATION = pysparkstandalone_federation.init(job_id=job_id, runtime_conf=runtime_conf)
+    
+    elif RuntimeInstance.MODE == WorkMode.PYSPARKCLUSTER:
+        from arch.api.pyspark.cluster import federation as pysparkcluster_federation
+        RuntimeInstance.FEDERATION = pysparkcluster_federation.init(job_id=job_id, runtime_conf=runtime_conf,
+                                                             server_conf_path=server_conf_path)  
+      
 def get(name, tag: str, idx=-1):
     """
     This method will block until the remote object is fetched.

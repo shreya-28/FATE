@@ -14,21 +14,4 @@
 #  limitations under the License.
 #
 
-from enum import IntEnum, Enum
 
-
-class WorkMode(IntEnum):
-    STANDALONE = 0
-    CLUSTER = 1
-    PYSPARKSTANDALONE = 2
-    PYSPARKCLUSTER = 3
-
-class RuntimeInstance(object):
-    EGGROLL = None
-    MODE = None
-    FEDERATION = None
-
-
-class StoreType(Enum):
-    IN_MEMORY = "IN_MEMORY"
-    LMDB = "LMDB"
