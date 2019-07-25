@@ -16,6 +16,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public abstract class BaseModel {
@@ -23,7 +24,7 @@ public abstract class BaseModel {
 
     public abstract int initModel(byte[] protoMeta, byte[] protoParam);
 
-    public abstract Map<String, Object> predict(Map<String, Object> inputData, Map<String, Object> predictParams);
+    public abstract Map<String, Object> predict(List<Map<String, Object> > inputData, Map<String, Object> predictParams);
 
     protected ReturnResult getFederatedPredict(Map<String, Object> federatedParams) {
         FederatedParty srcParty = (FederatedParty) federatedParams.get("local");
@@ -36,7 +37,7 @@ public abstract class BaseModel {
         ReturnResult remoteResultFromCache = CacheManager.getRemoteModelInferenceResult(dstParty, federatedRoles, featureIds);
         if (remoteResultFromCache != null) {
             LOGGER.info("Get remote party model inference result from cache.");
-            federatedParams.put("getRemotePartyResult", false);
+            federatedParams.put("is_cache", true);
             return remoteResultFromCache;
         }
 
@@ -49,7 +50,6 @@ public abstract class BaseModel {
         requestData.put("feature_id", ObjectTransform.bean2Json(federatedParams.get("feature_id")));
         requestData.put("local", ObjectTransform.bean2Json(dstParty));
         requestData.put("role", ObjectTransform.bean2Json(federatedParams.get("role")));
-        federatedParams.put("getRemotePartyResult", true);
         ReturnResult remoteResult = getFederatedPredictFromRemote(srcParty, dstParty, requestData);
         CacheManager.putRemoteModelInferenceResult(dstParty, federatedRoles, featureIds, remoteResult);
         LOGGER.info("Get remote party model inference result from federated request.");

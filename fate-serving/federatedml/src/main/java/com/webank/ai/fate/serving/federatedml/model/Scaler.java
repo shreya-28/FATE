@@ -6,12 +6,14 @@ import com.webank.ai.fate.core.mlmodel.buffer.ScaleParamProto.ScaleParam;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.List;
 import java.util.Map;
 
 public class Scaler extends BaseModel {
     private ScaleMeta scaleMeta;
     private ScaleParam scaleParam;
     private boolean isScale;
+    private boolean needRun = true;
     private static final Logger LOGGER = LogManager.getLogger();
 
     @Override
@@ -21,6 +23,7 @@ public class Scaler extends BaseModel {
             this.scaleMeta = ScaleMeta.parseFrom(protoMeta);
             this.scaleParam = ScaleParam.parseFrom(protoParam);
             this.isScale = scaleMeta.getIsScale();
+            // this.needRun = scaleMeta.getNeedRun();
         } catch (Exception ex) {
             ex.printStackTrace();
             return StatusCode.ILLEGALDATA;
@@ -30,17 +33,21 @@ public class Scaler extends BaseModel {
     }
 
     @Override
-    public Map<String, Object> predict(Map<String, Object> inputData, Map<String, Object> predictParams) {
+    public Map<String, Object> predict(List<Map<String, Object> > inputData, Map<String, Object> predictParams) {
+    	if (!this.needRun) {
+    	    return inputData.get(0);
+    	}
+        Map<String, Object> outputData = inputData.get(0);
         if (this.isScale) {
             String scaleMethod = this.scaleMeta.getStrategy();
             if (scaleMethod.toLowerCase().equals("min_max_scale")) {
                 MinMaxScale minMaxScale = new MinMaxScale();
-                inputData = minMaxScale.transform(inputData, this.scaleParam.getMinmaxScaleParamMap());
+                outputData = minMaxScale.transform(inputData.get(0), this.scaleParam.getMinmaxScaleParamMap());
             } else if (scaleMethod.toLowerCase().equals("standard_scale")) {
                 StandardScale standardScale = new StandardScale();
-                inputData = standardScale.transform(inputData, this.scaleParam.getStandardScaleParamMap());
+                outputData = standardScale.transform(inputData.get(0), this.scaleParam.getStandardScaleParamMap());
             }
         }
-        return inputData;
+        return outputData;
     }
 }

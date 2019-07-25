@@ -15,13 +15,12 @@ public class StandardScale {
             try {
                 StandardScaleParam standardScale = standardScalesMap.get(key);
 
-                double value = Double.parseDouble(inputData.get(key).toString());
+                double value = (double) inputData.get(key);
                 double scale = standardScale.getScale();
                 if (scale == 0)
                     scale = 1;
 
-                value = (value - standardScale.getMean()) / scale;
-                inputData.put(key, value);
+                inputData.put(key, (value - standardScale.getMean() / scale));
 
             } catch (Exception ex) {
                 ex.printStackTrace();

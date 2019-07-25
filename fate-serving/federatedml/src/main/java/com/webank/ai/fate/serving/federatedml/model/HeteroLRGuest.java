@@ -5,6 +5,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static java.lang.Math.exp;
@@ -17,15 +18,17 @@ public class HeteroLRGuest extends HeteroLR {
     }
 
     @Override
-    public Map<String, Object> predict(Map<String, Object> inputData, Map<String, Object> predictParams) {
+    public Map<String, Object> predict(List<Map<String, Object>> inputData, Map<String, Object> predictParams) {
         Map<String, Object> result = new HashMap<>();
         Map<String, Double> forwardRet = forward(inputData);
         double score = forwardRet.get("score");
+    
         LOGGER.info("guest score:{}", score);
 
         try {
             ReturnResult hostPredictResponse = this.getFederatedPredict((Map<String, Object>) predictParams.get("federatedParams"));
             predictParams.put("federatedResult", hostPredictResponse);
+            LOGGER.info("host response is {}", hostPredictResponse.getData());
             double hostScore = (double) hostPredictResponse.getData().get("score");
             LOGGER.info("host score:{}", hostScore);
             score += hostScore;
@@ -36,7 +39,7 @@ public class HeteroLRGuest extends HeteroLR {
         double prob = sigmod(score);
         result.put("prob", prob);
         result.put("guestModelWeightHitRate:{}", forwardRet.get("modelWrightHitRate"));
-        result.put("guestInputDataHitRate:{}", forwardRet.get("inputDataHitRate"));
+        result.put("guestInputDataHitRate:{}", forwardRet.get("inputDataHitRate"));        
 
         return result;
     }

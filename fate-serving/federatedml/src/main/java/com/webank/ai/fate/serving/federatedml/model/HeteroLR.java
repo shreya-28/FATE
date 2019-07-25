@@ -5,8 +5,9 @@ import com.webank.ai.fate.core.mlmodel.buffer.LRModelParamProto.LRModelParam;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
 
 public abstract class HeteroLR extends BaseModel {
     private Map<String, Double> weight;
@@ -25,25 +26,27 @@ public abstract class HeteroLR extends BaseModel {
             ex.printStackTrace();
             return StatusCode.ILLEGALDATA;
         }
-        LOGGER.info("Finish init HeteroLR class");
+        LOGGER.info("Finish init HeteroLR class, model weight is {}", this.weight);
         return StatusCode.OK;
     }
 
-    Map<String, Double> forward(Map<String, Object> inputData) {
-        double score = 0;
+    Map<String, Double> forward(List<Map<String, Object>> inputDatas) {
+    	Map<String, Object> inputData = inputDatas.get(0);
+
         int modelWeightHitCount = 0;
         int inputDataHitCount = 0;
         int weightNum = this.weight.size();
         int inputFeaturesNum = inputData.size();
         LOGGER.info("model weight number:{}", weightNum);
         LOGGER.info("input data features number:{}", inputFeaturesNum);
-
+        
+        double score = 0;
         for (String key : inputData.keySet()) {
             if (this.weight.containsKey(key)) {
-                score += Double.parseDouble(inputData.get(key).toString()) * this.weight.get(key);
+                score += (double) inputData.get(key) * this.weight.get(key);
                 modelWeightHitCount += 1;
                 inputDataHitCount += 1;
-                LOGGER.debug("key {} weight is {}, value is {}", key, this.weight.get(key), inputData.get(key));
+                LOGGER.info("key {} weight is {}, value is {}", key, this.weight.get(key), inputData.get(key));
             }
         }
         score += this.intercept;
@@ -53,7 +56,7 @@ public abstract class HeteroLR extends BaseModel {
         try {
             modelWeightHitRate = (double) modelWeightHitCount / weightNum;
             inputDataHitRate = (double) inputDataHitCount / inputFeaturesNum;
-        }catch (Exception ex){
+        } catch (Exception ex){
             ex.printStackTrace();
         }
 
@@ -64,9 +67,10 @@ public abstract class HeteroLR extends BaseModel {
         ret.put("score", score);
         ret.put("modelWrightHitRate", modelWeightHitRate);
         ret.put("inputDataHitRate", inputDataHitRate);
+
         return ret;
     }
 
     @Override
-    public abstract Map<String, Object> predict(Map<String, Object> inputData, Map<String, Object> predictParams);
+    public abstract Map<String, Object> predict(List<Map<String, Object> > inputData, Map<String, Object> predictParams);
 }
