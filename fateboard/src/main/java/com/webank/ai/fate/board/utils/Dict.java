@@ -58,4 +58,9 @@ public class Dict {
     static public final String URL_JOB_STOP = "/v1/pipeline/job/stop";
     static public final String REMOTE_RETURN_MSG = "retmsg";
 
+    static public final String SSH_IP = "ip";
+    static public final String SSH_USER = "user";
+    static public final String SSH_PASSWORD = "password";
+    static public final String SSH_PORT = "port";
+
 }
