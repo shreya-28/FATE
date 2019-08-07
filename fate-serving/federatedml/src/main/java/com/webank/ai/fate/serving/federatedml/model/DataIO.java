@@ -3,6 +3,7 @@ package com.webank.ai.fate.serving.federatedml.model;
 import com.webank.ai.fate.core.constant.StatusCode;
 import com.webank.ai.fate.core.mlmodel.buffer.DataIOMetaProto.DataIOMeta;
 import com.webank.ai.fate.core.mlmodel.buffer.DataIOParamProto.DataIOParam;
+import com.webank.ai.fate.serving.core.bean.Context;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -48,7 +49,7 @@ public class DataIO extends BaseModel {
     }
 
     @Override
-    public Map<String, Object> predict(List<Map<String, Object> > inputData, Map<String, Object> predictParams) {
+    public Map<String, Object> predict(Context context, List<Map<String, Object> > inputData, Map<String, Object> predictParams) {
     	Map<String, Object> input = inputData.get(0);
     	
     	if (this.isImputer) {

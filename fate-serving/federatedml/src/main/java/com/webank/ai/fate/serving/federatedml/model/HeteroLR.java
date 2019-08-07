@@ -2,6 +2,7 @@ package com.webank.ai.fate.serving.federatedml.model;
 
 import com.webank.ai.fate.core.constant.StatusCode;
 import com.webank.ai.fate.core.mlmodel.buffer.LRModelParamProto.LRModelParam;
+import com.webank.ai.fate.serving.core.bean.Context;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -31,7 +32,7 @@ public abstract class HeteroLR extends BaseModel {
     }
 
     Map<String, Double> forward(List<Map<String, Object>> inputDatas) {
-    	Map<String, Object> inputData = inputDatas.get(0);
+        Map<String, Object> inputData = inputDatas.get(0);
 
         int modelWeightHitCount = 0;
         int inputDataHitCount = 0;
@@ -39,7 +40,7 @@ public abstract class HeteroLR extends BaseModel {
         int inputFeaturesNum = inputData.size();
         LOGGER.info("model weight number:{}", weightNum);
         LOGGER.info("input data features number:{}", inputFeaturesNum);
-        
+
         double score = 0;
         for (String key : inputData.keySet()) {
             if (this.weight.containsKey(key)) {
@@ -72,5 +73,5 @@ public abstract class HeteroLR extends BaseModel {
     }
 
     @Override
-    public abstract Map<String, Object> predict(List<Map<String, Object> > inputData, Map<String, Object> predictParams);
+    public abstract Map<String, Object> predict(Context context , List<Map<String, Object> > inputData, Map<String, Object> predictParams);
 }

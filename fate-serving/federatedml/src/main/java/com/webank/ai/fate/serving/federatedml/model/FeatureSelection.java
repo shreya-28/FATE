@@ -7,6 +7,8 @@ import com.webank.ai.fate.core.mlmodel.buffer.FeatureSelectionParamProto.Feature
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
+
+import com.webank.ai.fate.serving.core.bean.Context;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -31,7 +33,7 @@ public class FeatureSelection extends BaseModel {
     }
 
     @Override
-    public Map<String, Object> predict(List<Map<String, Object> > inputData, Map<String, Object> predictParams) {
+    public Map<String, Object> predict(Context context , List<Map<String, Object> > inputData, Map<String, Object> predictParams) {
         LOGGER.info("Start Feature Selection predict");
         HashMap<String, Object> outputData = new HashMap<>();
         Map<String, Object> firstData = inputData.get(0);

@@ -14,12 +14,12 @@ public class Imputer {
     private static final Logger LOGGER = LogManager.getLogger();
     public HashSet<String> missingValueSet;
     public Map<String, String> missingReplaceValues;
-    
+
     public Imputer(List<String> missingValues, Map<String, String> missingReplaceValue) {
     	this.missingValueSet = new HashSet<String>(missingValues);
     	this.missingReplaceValues = missingReplaceValue;
     }
-    
+
     public Map<String, Object> transform(Map<String, Object> inputData) {
         for (String key : inputData.keySet()) {
             String value = inputData.get(key).toString();
