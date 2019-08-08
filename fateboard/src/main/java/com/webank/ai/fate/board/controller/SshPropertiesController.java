@@ -35,6 +35,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.*;
 import java.util.*;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping(value = "/ssh")
@@ -47,36 +49,67 @@ public class SshPropertiesController {
     SshService sshService;
 
 
-    @RequestMapping(value = "/all", method = RequestMethod.GET)
+    @RequestMapping(value = "/checkStatus/{ip}", method = RequestMethod.GET)
+    public ResponseResult checkSShStatus(@PathVariable String ip) {
+
+        String  status ="0";
+
+        status=  checkStatus(ip);
+
+        return new ResponseResult<>(ErrorCode.SUCCESS, status);
+    }
+
+
+
+        @RequestMapping(value = "/all", method = RequestMethod.GET)
     public ResponseResult readAll() throws Exception {
+
+
         HashMap<Object, List> data = Maps.newHashMap();
 
         Properties properties = new Properties();
-        InputStream inputStream = this.getInputStream();
-        properties.load(inputStream);
-        Enumeration<?> enumeration = properties.propertyNames();
-        while (enumeration.hasMoreElements()) {
+       try( InputStream inputStream = this.getInputStream()) {
+           properties.load(inputStream);
+           Enumeration<?> enumeration = properties.propertyNames();
+           int size = properties.size();
+           CountDownLatch countDownLatchs = new CountDownLatch(size);
+           while (enumeration.hasMoreElements()) {
+               List<String> sshInformation = new LinkedList<>();
+               String ip = (String) enumeration.nextElement();
+               String sshValue = properties.getProperty(ip);
+               sshInformation.add(sshValue);
 
-            List<String> sshInformation = new LinkedList<>();
 
-            String ip = (String) enumeration.nextElement();
-            String sshValue = properties.getProperty(ip);
-            String status = checkStatus(inputStream, ip);
+//               new Thread(() -> {
+//
+//                   try {
+//
+//                       String status = checkStatus(inputStream, ip);
+//
+//
+//                       data.put(ip, sshInformation);
+//                   } catch (Throwable e) {
+//                       logger.error("get ssh info error", e);
+//                   } finally {
+//                       countDownLatchs.countDown();
+//                   }
+//
+//               }).start();
+           }
 
-            sshInformation.add(sshValue);
-            sshInformation.add(status);
+        //   countDownLatchs.await(10, TimeUnit.SECONDS);
+       }
 
-            data.put(ip, sshInformation);
-        }
 
-        inputStream.close();
         return new ResponseResult<Map>(ErrorCode.SUCCESS, data);
     }
 
-    private String checkStatus(InputStream inputStream, String ip) throws IOException {
+    private String checkStatus( String ip)  {
         String status = null;
-        sshService.load(inputStream);
         SshInfo sshInfo = sshService.getSSHInfo(ip);
+        if(sshInfo==null) {
+            return "0";
+        }
         Session session = null;
         try {
             session = sshService.connect(sshInfo);
@@ -104,7 +137,7 @@ public class SshPropertiesController {
         InputStream inputStream = this.getInputStream();
         properties.load(inputStream);
         String value = properties.getProperty(ip);
-        String status = checkStatus(inputStream, ip);
+        String status = checkStatus( ip);
 
         sshInformation.add(value);
         sshInformation.add(status);
@@ -157,7 +190,7 @@ public class SshPropertiesController {
         OutputStream writer = this.getOutputStream();
         properties.store(writer, "add" + "  key:" + ip + ", value" + connectInformation);
 
-        String status = checkStatus(inputStream, ip);
+        String status = checkStatus( ip);
         sshInformation.add(connectInformation);
         sshInformation.add(status);
         data.put(ip, sshInformation);
