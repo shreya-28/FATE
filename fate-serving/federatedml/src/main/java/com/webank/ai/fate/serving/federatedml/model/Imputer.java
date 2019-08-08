@@ -21,6 +21,7 @@ public class Imputer {
     }
 
     public Map<String, Object> transform(Map<String, Object> inputData) {
+		LOGGER.info("start imputer transform task");
         for (String key : inputData.keySet()) {
             String value = inputData.get(key).toString();
             if (this.missingValueSet.contains(value.toLowerCase())) {
