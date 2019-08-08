@@ -41,10 +41,12 @@ public class FeatureSelection extends BaseModel {
         Map<String, Object> firstData = inputData.get(0);
         LOGGER.info("first data is {}", firstData);
 		for (String key: firstData.keySet()) {
-            Boolean isLeft = this.finalLeftCols.getLeftCols().get(key);
-            if (isLeft) {
-                outputData.put(key, firstData.get(key));
-            }
+			if (this.finalLeftCols.getLeftCols().containsKey(key)) {
+                Boolean isLeft = this.finalLeftCols.getLeftCols().get(key);
+                if (isLeft) {
+                    outputData.put(key, firstData.get(key));
+                }
+			}
         }
         return outputData;
     }
