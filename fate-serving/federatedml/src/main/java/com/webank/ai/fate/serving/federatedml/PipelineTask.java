@@ -75,17 +75,17 @@ public class PipelineTask {
             HashSet<Integer> upInputComponents = this.dslParser.getUpInputComponents(i);
             LOGGER.info("upInputComponents is {}", upInputComponents);
             if (upInputComponents != null) {
-            	Iterator<Integer> iters = upInputComponents.iterator();
-            	while (iters.hasNext()) {
-            	    Integer upInput = iters.next();
-            	    if (upInput == -1) {
-            		inputs.add(inputData);
-            	    } else {
-            	        inputs.add(outputData.get(upInput));
-            	    }
-            	}
+                Iterator<Integer> iters = upInputComponents.iterator();
+                while (iters.hasNext()) {
+                    Integer upInput = iters.next();
+                    if (upInput == -1) {
+                        inputs.add(inputData);
+                    } else {
+                        inputs.add(outputData.get(upInput));
+                    }
+                }
             } else {
-            	inputs.add(inputData);
+                inputs.add(inputData);
             }
             LOGGER.info("input data is {}", inputs);
             outputData.add(this.pipeLineNode.get(i).predict(context,inputs, predictParams));

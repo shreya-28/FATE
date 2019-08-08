@@ -26,6 +26,7 @@ public class FeatureSelection extends BaseModel {
             this.finalLeftCols = featureSelectionParam.getFinalLeftCols();
         } catch (Exception ex) {
             ex.printStackTrace();
+			LOGGER.info("fail of init feature selection model");
             return StatusCode.ILLEGALDATA;
         }
         LOGGER.info("Finish init Feature Selection class");
@@ -37,7 +38,8 @@ public class FeatureSelection extends BaseModel {
         LOGGER.info("Start Feature Selection predict");
         HashMap<String, Object> outputData = new HashMap<>();
         Map<String, Object> firstData = inputData.get(0);
-        for (String key: firstData.keySet()) {
+        LOGGER.info("first data is {}", firstData);
+		for (String key: firstData.keySet()) {
             Boolean isLeft = this.finalLeftCols.getLeftColsMap().get(key);
             if (isLeft) {
                 outputData.put(key, firstData.get(key));
