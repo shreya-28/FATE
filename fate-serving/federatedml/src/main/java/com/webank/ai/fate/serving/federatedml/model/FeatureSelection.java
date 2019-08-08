@@ -23,7 +23,8 @@ public class FeatureSelection extends BaseModel {
         LOGGER.info("start init Feature Selection class");
         try {
             this.featureSelectionParam = FeatureSelectionParam.parseFrom(protoParam);
-            this.finalLeftCols = featureSelectionParam.getFinalLeftCols();
+            LOGGER.info("feature selection param is {}", this.featureSelectionParam);
+			this.finalLeftCols = featureSelectionParam.getFinalLeftCols();
         } catch (Exception ex) {
             ex.printStackTrace();
 			LOGGER.info("fail of init feature selection model");
@@ -40,7 +41,7 @@ public class FeatureSelection extends BaseModel {
         Map<String, Object> firstData = inputData.get(0);
         LOGGER.info("first data is {}", firstData);
 		for (String key: firstData.keySet()) {
-            Boolean isLeft = this.finalLeftCols.getLeftColsMap().get(key);
+            Boolean isLeft = this.finalLeftCols.getLeftCols().get(key);
             if (isLeft) {
                 outputData.put(key, firstData.get(key));
             }
