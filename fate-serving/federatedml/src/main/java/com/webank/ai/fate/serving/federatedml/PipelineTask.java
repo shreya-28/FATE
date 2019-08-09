@@ -104,7 +104,7 @@ public class PipelineTask {
 
         LOGGER.info("Finish Pipeline predict");
         LOGGER.info("Finish Pipeline predict, outputData is {}", outputData);
-		LOGGER.info("output data is {}".format(outputData.get(outputData.size() - 1)));
+		LOGGER.info("output data is {}", outputData.get(outputData.size() - 1));
         return outputData.get(outputData.size() - 1);
     }
 
