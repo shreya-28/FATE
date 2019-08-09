@@ -22,7 +22,7 @@ Item              | Meaning             | Example / Value
 ------------------|---------------------|------------------------
 party.id          |party id of FL participant      | e.g. 10000
 service.port      |port to listen on    | federation defaults to 9394
-meta.service.ip   |meta-service ip  | e.g. 172.16.153.xx
+meta.service.ip   |meta-service ip  | e.g. 192.168.1.xx
 meta.service.port |meta-service port | defaults to 8590
 
 ## 2.2. Meta-Service
@@ -56,16 +56,16 @@ Module | Minimum requirement | Comments
 -------|---------------------|------------
 Roll   | exactly 1           | Advanced deployment in the next version
 Egg (processor) | at least 1 | This will change in the next version
-Egg (storage-service) | at least 1 | 
-Federation | exactly 1       | 
-Proxy  | at least 1          | 
+Egg (storage-service) | at least 1 |
+Federation | exactly 1       |
+Proxy  | at least 1          |
 Exchange | Inter-party communication can use any amount of exchange, included 0 (i.e. direct connection)
 
 **a. Roll**
 
 For each Roll, a database record should be inserted:
 ```
-INSERT INTO node (ip, port, type, status) values 
+INSERT INTO node (ip, port, type, status) values
 ('${roll_ip}', '${roll_port}', 'ROLL', 'HEALTHY')
 ```
 
@@ -73,7 +73,7 @@ INSERT INTO node (ip, port, type, status) values
 
 For each Processor, a database record should be inserted:
 ```
-INSERT INTO node (ip, port, type, status) values 
+INSERT INTO node (ip, port, type, status) values
 ('${processor_ip}', '${processor_port}', 'EGG', 'HEALTHY')
 ```
 
@@ -81,11 +81,11 @@ INSERT INTO node (ip, port, type, status) values
 
 For each Storage-Service, a database record should be inserted:
 ```
-INSERT INTO node (ip, port, type, status) values 
+INSERT INTO node (ip, port, type, status) values
 ('${storage_service_ip}', '${storage_service_port}', 'STORAGE', 'HEALTHY')
 ```
 
-**d. Federation**  
+**d. Federation**
 
 No database record insertion is need for Federation module at this stage.
 
@@ -93,14 +93,14 @@ No database record insertion is need for Federation module at this stage.
 
 For each Proxy, a database record should be inserted:
 ```
-INSERT INTO node (ip, port, type, status) values 
+INSERT INTO node (ip, port, type, status) values
 ('${proxy_ip}', '${proxy_port}', 'PROXY', 'HEALTHY')
 ```
 
 ## 2.3. Processor
 Processor is used to execute user-defined functions.
 ### 2.3.1. service.sh
-Modify variables in processor.sh base on your environment. 
+Modify variables in processor.sh base on your environment.
 
 Item                   | Meaning             | Example / Value
 -----------------------|---------------------|------------------------
@@ -129,8 +129,8 @@ root.crt          | path to certification of root ca | 暂时不填
 
 Item              | Meaning                       | Example / Value
 ------------------|------------------------------|------------------------
-default           | ip and port of exchange or default proxy | 172.16.153.xx / 9370
-${partyId}        | federation ip and port of own party  | 172.16.153.yy / 9394
+default           | ip and port of exchange or default proxy | 192.168.1.xx / 9370
+${partyId}        | federation ip and port of own party  | 192.168.1.yy / 9394
 
 example:
 
@@ -205,7 +205,7 @@ Item              | Meaning             | Example / Value
 ------------------|---------------------|------------------------
 party.id          |party id of FL participant | e.g. 10000
 service.port      |port to listen on.   | roll defaults to 8011
-meta.service.ip   |meta-service ip      | e.g. 172.16.153.xx
+meta.service.ip   |meta-service ip      | e.g. 192.168.1.xx
 meta.service.port |meta-service port    | defaults to 8590
 
 ## 2.6. Storage-Service
@@ -227,12 +227,12 @@ No modification is required.
 ### 2.7.2. serving-server.properties
 Item                            | Meaning                                                    | Example / Value
 --------------------------------|------------------------------------------------------------|------------------------
-ip                              |ip to bind                                                  | e.g. 127.0.0.1 
+ip                              |ip to bind                                                  | e.g. 127.0.0.1
 port                            |port to listen on                                           | e.g. 8001
 workMode                        |working mode of serving, 0 for standalone and 1 for cluster | e.g. 1
 party.id                        |party id of FL participant                                  | e.g. 10000
-proxy                           |proxy address                                               | e.g. 172.16.153.xx:9370
-roll                            |roll address                                                | e.g. 172.16.153.xx:8011
+proxy                           |proxy address                                               | e.g. 192.168.1.xx:9370
+roll                            |roll address                                                | e.g. 192.168.1.xx:8011
 standaloneStoragePath           |standalone storage path if you deploy as standalone         | e.g. ${deployDir}/python/data/
 modelCacheAccessTTL(hour)       |the model cache will be cleaned up after this time          | e.g. 12
 modelCacheMaxSize               |maximum number of cached models                             | e.g. 50
@@ -247,12 +247,12 @@ Task Manager is a service for managing tasks. It can be used to start training t
 ### 2.8.1. settings.py
 Item         | Meaning                                                    | Example / Value
 -------------|------------------------------------------------------------|------------------------
-IP           |ip to bind                                                  | e.g. 127.0.0.1 
+IP           |ip to bind                                                  | e.g. 127.0.0.1
 HTTP_PORT    |http port to listen on                                      | e.g. 6380
 GRPC_PORT    |grpc port to listen on                                      | e.g. 6360
 PARTY_ID     |party id of FL participant                                  | e.g. 10000
 WORK_MODE    |working mode of serving, 0 for standalone and 1 for cluster | e.g. 1
-DATABASE     |database settings                                           | 
+DATABASE     |database settings                                           |
 
 
 ## 2.8. API
@@ -269,7 +269,7 @@ APIs are interfaces exposed by the whole running architecture. Algorithm enginee
       "host": "localhost",  # ip address of federation module
       "port": 9394          # port of federation module
     },
-    "manager": {             
+    "manager": {
       "host": "localhost", # ip address of task_manager
       "grpc.port": 9360,   # grpc port of task_manager
       "http.port": 9380    # http port of task_manager
@@ -279,8 +279,8 @@ APIs are interfaces exposed by the whole running architecture. Algorithm enginee
        "port": 9370         # port address of proxy module
     },
     "servings": [
-        "172.153.16.1:8000",
-        "172.153.16.2:8000"
+        "192.168.1:8000",
+        "192.168.2:8000"
     ]
   }
 }
@@ -291,7 +291,7 @@ APIs are interfaces exposed by the whole running architecture. Algorithm enginee
 ```
 usage: sh service.sh {start|stop|status|restart}
 ```
-Arg. Seq | usage          | Meaning             
+Arg. Seq | usage          | Meaning
 ---------|----------------|---------------------
 1        | start          | to start the service
 1        | stop           | to stop the service
@@ -303,7 +303,7 @@ Arg. Seq | usage          | Meaning
 ```
 usage: sh services.sh {all|current|[module1 module2 ...]} {start|stop|status|restart}
 ```
-Arg. Seq | usage                           | Meaning             
+Arg. Seq | usage                           | Meaning
 ---------|---------------------------------|---------------------
 1        | all                             | ALL services
 1        | current                         | CURRENT running services
@@ -315,7 +315,7 @@ Arg. Seq | usage                           | Meaning
 ```
 usage: sh fate-deploy.sh {cluster_name} {deploy|try|rollback|overwrite|restart}
 ```
-Arg. Seq | usage      | Meaning             
+Arg. Seq | usage      | Meaning
 ---------|------------|--------------------
 1        | eg. test / production | cluster name
 2        | deploy     | REAL deploy. This operation utilize rsync to deploy incremental part of the project. But only jars / python sources will be deployed, configuration files and logs are not included. Old version will be back up to fate-deploy.old
@@ -330,7 +330,7 @@ Arg. Seq | usage      | Meaning
 ```
 usage: sh file-deploy.sh {cluster_name} {local_path} {remote_path}
 ```
-Arg. Seq | usage             | Meaning             
+Arg. Seq | usage             | Meaning
 ---------|-------------------|---------------------
 1        | test / production / {ip} | cluster name or single ip address
 2        | local_path        | local path. can be a file or a dir
