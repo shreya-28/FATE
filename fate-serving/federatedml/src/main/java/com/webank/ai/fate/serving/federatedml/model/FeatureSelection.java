@@ -3,6 +3,7 @@ import com.webank.ai.fate.core.constant.StatusCode;
 
 import com.webank.ai.fate.core.mlmodel.buffer.FeatureSelectionParamProto.LeftCols;
 import com.webank.ai.fate.core.mlmodel.buffer.FeatureSelectionParamProto.FeatureSelectionParam;
+import com.webank.ai.fate.core.mlmodel.buffer.FeatureSelectionMetaProto.FeatureSelectionMeta;;
 
 import java.util.List;
 import java.util.Map;
@@ -15,13 +16,18 @@ import org.apache.logging.log4j.Logger;
 
 public class FeatureSelection extends BaseModel {
     private FeatureSelectionParam featureSelectionParam;
+	private FeatureSelectionMeta featureSelectionMeta;
     private LeftCols finalLeftCols;
+	private boolean needRun;
     private static final Logger LOGGER = LogManager.getLogger();
 
     @Override
     public int initModel(byte[] protoMeta, byte[] protoParam) {
         LOGGER.info("start init Feature Selection class");
+		this.needRun = false;
         try {
+			this.featureSelectionMeta = FeatureSelectionMeta.parseFrom(protoMeta);
+			this.needRun = this.featureSelectionMeta.getNeedRun();
             this.featureSelectionParam = FeatureSelectionParam.parseFrom(protoParam);
             LOGGER.info("feature selection param is {}", this.featureSelectionParam);
 			this.finalLeftCols = featureSelectionParam.getFinalLeftCols();
@@ -40,6 +46,11 @@ public class FeatureSelection extends BaseModel {
         HashMap<String, Object> outputData = new HashMap<>();
         Map<String, Object> firstData = inputData.get(0);
         LOGGER.info("first data is {}", firstData);
+
+		if (!this.needRun) {
+			return firstData;
+		}
+
 		for (String key: firstData.keySet()) {
 			if (this.finalLeftCols.getLeftCols().containsKey(key)) {
                 Boolean isLeft = this.finalLeftCols.getLeftCols().get(key);

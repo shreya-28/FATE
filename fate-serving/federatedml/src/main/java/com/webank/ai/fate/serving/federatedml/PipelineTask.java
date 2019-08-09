@@ -54,6 +54,7 @@ public class PipelineTask {
                     pipeLineNode.add(mlNode);
                     LOGGER.info(" Add class {} to pipeline task list", className);
                 } catch (Exception ex) {
+                    pipeLineNode.add(null);
                     LOGGER.warn("Can not instance {} class", className);
                 }
             }
@@ -88,7 +89,11 @@ public class PipelineTask {
                 inputs.add(inputData);
             }
             LOGGER.info("input data is {}", inputs);
-            outputData.add(this.pipeLineNode.get(i).predict(context,inputs, predictParams));
+            if (this.pipeLineNode.get(i) != null) {
+				outputData.add(this.pipeLineNode.get(i).predict(context,inputs, predictParams));
+			} else {
+				outputData.add(inputs.get(0));
+			}
 
             LOGGER.info("finish mlNone:{}", i);
         }
@@ -99,6 +104,7 @@ public class PipelineTask {
 
         LOGGER.info("Finish Pipeline predict");
         LOGGER.info("Finish Pipeline predict, outputData is {}", outputData);
+		LOGGER.info("output data is {}".format(outputData.get(outputData.size() - 1)));
         return outputData.get(outputData.size() - 1);
     }
 
