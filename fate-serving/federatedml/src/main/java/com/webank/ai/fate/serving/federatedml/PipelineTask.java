@@ -71,7 +71,11 @@ public class PipelineTask {
         LOGGER.info("Start Pipeline predict use {} model node.", this.pipeLineNode.size());
         List<Map<String, Object>> outputData = new ArrayList<>();
         for (int i = 0; i < this.pipeLineNode.size(); i++) {
-            LOGGER.info(this.pipeLineNode.get(i).getClass().getName());
+            if (this.pipeLineNode.get(i) != null) {
+				LOGGER.info("component class is {}", this.pipeLineNode.get(i).getClass().getName());
+			} else {
+				LOGGER.info("component class is {}", this.pipeLineNode.get(i));
+			}
             List<Map<String, Object>> inputs = new ArrayList<>();
             HashSet<Integer> upInputComponents = this.dslParser.getUpInputComponents(i);
             LOGGER.info("upInputComponents is {}", upInputComponents);
