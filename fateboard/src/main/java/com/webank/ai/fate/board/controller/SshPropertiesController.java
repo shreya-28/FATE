@@ -49,14 +49,73 @@ public class SshPropertiesController {
     SshService sshService;
 
 
-    @RequestMapping(value = "/checkStatus/{ip}", method = RequestMethod.GET)
-    public ResponseResult checkSShStatus(@PathVariable String ip) {
+    @RequestMapping(value = "/checkStatus", method = RequestMethod.GET)
+    public ResponseResult checkSShStatus() throws IOException, InterruptedException {
 
-        String  status ="0";
 
-        status=  checkStatus(ip);
 
-        return new ResponseResult<>(ErrorCode.SUCCESS, status);
+        HashMap<Object, SshInfo> data = Maps.newHashMap();
+
+        Properties properties = new Properties();
+        try( InputStream inputStream = this.getInputStream()) {
+            properties.load(inputStream);
+            Enumeration<?> enumeration = properties.propertyNames();
+            int size = properties.size();
+
+            while (enumeration.hasMoreElements()) {
+
+                try {
+                    SshInfo sshInfo = new SshInfo();
+                    String status = "0";
+                    String ip = (String) enumeration.nextElement();
+                    status = checkStatus(ip);
+                    String sshValue = properties.getProperty(ip);
+                    String[] params = sshValue.split("\\|");
+                    sshInfo.setIp(ip);
+                    if (params.length > 0) {
+                        sshInfo.setUser(params[0]);
+                        sshInfo.setPassword(params[1]);
+                        sshInfo.setPort(new Integer(params[2]));
+                        sshInfo.setStatus(status);
+                    }
+                    data.put(ip, sshInfo);
+                }catch(Exception e){
+
+                }
+            }
+        }
+        int  size =  data.size();
+
+        CountDownLatch  countDownLatch  = new CountDownLatch(size);
+        data.forEach((k,v)->{
+            new  Thread(()->{
+
+                try {
+                    Session session = null;
+                    try {
+                        session = sshService.connect(v);
+                    } catch (Exception e) {
+
+                        v.setStatus("0");
+                    }
+                    if (session != null) {
+                        v.setStatus("1");
+                    }
+                }finally {
+                    countDownLatch.countDown();
+                }
+
+
+            }).start();
+
+
+
+        });
+
+        countDownLatch.await();
+
+
+        return new ResponseResult<>(ErrorCode.SUCCESS, data);
     }
 
 
@@ -65,39 +124,32 @@ public class SshPropertiesController {
     public ResponseResult readAll() throws Exception {
 
 
-        HashMap<Object, List> data = Maps.newHashMap();
+        HashMap<Object, SshInfo> data = Maps.newHashMap();
 
         Properties properties = new Properties();
        try( InputStream inputStream = this.getInputStream()) {
            properties.load(inputStream);
            Enumeration<?> enumeration = properties.propertyNames();
            int size = properties.size();
-           CountDownLatch countDownLatchs = new CountDownLatch(size);
+
            while (enumeration.hasMoreElements()) {
-               List<String> sshInformation = new LinkedList<>();
+               SshInfo  sshInfo  =   new SshInfo();
+
+
                String ip = (String) enumeration.nextElement();
+
                String sshValue = properties.getProperty(ip);
-               sshInformation.add(sshValue);
 
-
-//               new Thread(() -> {
-//
-//                   try {
-//
-//                       String status = checkStatus(inputStream, ip);
-//
-//
-//                       data.put(ip, sshInformation);
-//                   } catch (Throwable e) {
-//                       logger.error("get ssh info error", e);
-//                   } finally {
-//                       countDownLatchs.countDown();
-//                   }
-//
-//               }).start();
+               String[] params = sshValue.split("\\|");
+               sshInfo.setIp(ip);
+               if (params.length > 0) {
+                   sshInfo.setUser(params[0]);
+                   sshInfo.setPassword(params[1]);
+                   sshInfo.setPort(new Integer(params[2]));
+               }
+               data.put(ip, sshInfo);
            }
 
-        //   countDownLatchs.await(10, TimeUnit.SECONDS);
        }
 
 
