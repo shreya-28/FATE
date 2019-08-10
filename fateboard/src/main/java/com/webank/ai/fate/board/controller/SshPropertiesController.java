@@ -52,8 +52,6 @@ public class SshPropertiesController {
     @RequestMapping(value = "/checkStatus", method = RequestMethod.GET)
     public ResponseResult checkSShStatus() throws IOException, InterruptedException {
 
-
-
         HashMap<Object, SshInfo> data = Maps.newHashMap();
 
         Properties properties = new Properties();
@@ -112,7 +110,7 @@ public class SshPropertiesController {
 
         });
 
-        countDownLatch.await();
+        countDownLatch.await(10, TimeUnit.SECONDS);
 
 
         return new ResponseResult<>(ErrorCode.SUCCESS, data);
