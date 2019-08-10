@@ -112,7 +112,7 @@ public class PipelineTask {
     	HashMap<String, byte[]> newModelProtoMap = new HashMap<String, byte[]>();
     	for (Map.Entry<String, byte[]> entry: modelProtoMap.entrySet()) {
     		String key = entry.getKey();
-    		if (!key.equals("pipeline.Pipeline")) {
+    		if (!key.equals("pipeline.pipeline:Pipeline")) {
     			String[] componentNameSegments = key.split("\\.", -1);
     			if (componentNameSegments.length != 2) {
     				newModelProtoMap.put(entry.getKey(), entry.getValue());
