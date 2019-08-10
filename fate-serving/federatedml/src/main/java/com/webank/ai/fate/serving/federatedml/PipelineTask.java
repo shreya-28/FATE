@@ -29,7 +29,7 @@ public class PipelineTask {
             Map<String, byte[]> newModelProtoMap = changeModelProto(modelProtoMap);
             LOGGER.info("modelProtoMap is {}", modelProtoMap);
             LOGGER.info("newModelProtoMap is {}", newModelProtoMap);
-            String pipelineProtoName = "pipeline.Pipeline";
+            String pipelineProtoName = "pipeline.pipeline:Pipeline";
             LOGGER.info("new model proto map is {}", newModelProtoMap.get(pipelineProtoName));
             PipelineProto.Pipeline pipeLineProto = PipelineProto.Pipeline.parseFrom(newModelProtoMap.get(pipelineProtoName));
             LOGGER.info("Finish get Pipeline proto");
