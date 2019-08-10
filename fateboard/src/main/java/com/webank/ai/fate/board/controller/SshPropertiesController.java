@@ -110,7 +110,7 @@ public class SshPropertiesController {
 
         });
 
-        countDownLatch.await(10, TimeUnit.SECONDS);
+        countDownLatch.await(8, TimeUnit.SECONDS);
 
 
         return new ResponseResult<>(ErrorCode.SUCCESS, data);

@@ -162,7 +162,7 @@ public class SshService implements InitializingBean {
             config.put("StrictHostKeyChecking", "no");
             session.setConfig(config);
             try {
-                session.connect(30000);
+                session.connect(5000);
             } catch (Exception e) {
                 e.printStackTrace();
 
