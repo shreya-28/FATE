@@ -4,8 +4,10 @@
 *.iml
 *.pyc
 __pycache__
-*.jar
-*.class
+.jar
+.class
+.project
+*.prefs
 
 # excluded paths
 /arch/core/target/
@@ -23,8 +25,8 @@ __pycache__
 /fate-serving/fate-serving-core/target/
 /arch/networking/target/
 /arch/target/
-/fateboard/target/
 /data/
 /logs/
 /jobs/
 /audit/
+.vscode/*
