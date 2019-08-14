@@ -123,7 +123,7 @@ The logs for each party is collected separately and list in different folders. I
 
 
 ### Some common usage of fate flow
-1.How to get the output data of each component:
+#### 1.How to get the output data of each component:
 
  >cd {your_fate_path}/fate_flow
  
@@ -139,29 +139,27 @@ component_name: the component name which you want to get, such as component_name
 
 output_dir: the output directory
 
-2.How to get the output model of each component
-
- >cd {your_fate_path}/fate_flow
+#### 2.How to get the output model of each component
  
  >python fate_flow_client.py -f component_output_model -j $jobid -p $party_id -r $role -cpn $component_name
 
 
-3.How to get the logs of task
+#### 3.How to get the logs of task
 
  >python fate_flow_client.py -f job_log -j $jobid -o $output_dir
  
-4.How to stop the job
+#### 4.How to stop the job
 
  > python fate_flow_client.py -f stop_job -j $jobid
 
-5.How to query job current status
+#### 5.How to query job current status
 
  > python fate_flow_client.py -f query_job -j $jobid -p party_id -r role
 
-6.How to get the job runtime configure
+#### 6.How to get the job runtime configure
  > python fate_flow_client.py -f job_config -j $jobid -p party_id -r role -o $output_dir
 
-7.How to download a table which has been uploaded before
+#### 7.How to download a table which has been uploaded before
  > python fate_flow_client.py -f download -n table_namespace -t table_name -w work_mode -o save_file
  
  work_mode: will be 0 for standalone or 1 for cluster, which depend on what you set in upload config
