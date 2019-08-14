@@ -122,3 +122,46 @@ After you submit a job, you can find your job log in ${Your install path}/logs/$
 The logs for each party is collected separately and list in different folders. Inside each folder, the logs for different components are also arranged in different folders. In this way, you can check out the log more specifically and get useful detailed  information.
 
 
+### Some common usage of fate flow
+1.How to get the output data of each component:
+
+ >cd {your_fate_path}/fate_flow
+ 
+ >python fate_flow_client.py -f component_output_data -j $jobid -p $party_id -r $role -cpn $component_name -o $output_dir
+
+jobid:the task jobid you want to get.
+
+party_id:your mechine's party_id, such as 10000
+
+role:"guest" or "host" or "arbiter"
+ 
+component_name: the component name which you want to get, such as component_name "hetero_lr_0" in {your_fate_path}/examples/federatedml-1.0-examples/hetero_logistic_regression/test_hetero_lr_train_job_dsl.json
+
+output_dir: the output directory
+
+2.How to get the output model of each component
+
+ >cd {your_fate_path}/fate_flow
+ 
+ >python fate_flow_client.py -f component_output_model -j $jobid -p $party_id -r $role -cpn $component_name
+
+
+3.How to get the logs of task
+
+ >python fate_flow_client.py -f job_log -j $jobid -o $output_dir
+ 
+4.How to stop the job
+
+ > python fate_flow_client.py -f stop_job -j $jobid
+
+5.How to query job current status
+
+ > python fate_flow_client.py -f query_job -j $jobid -p party_id -r role
+
+6.How to get the job runtime configure
+ > python fate_flow_client.py -f job_config -j $jobid -p party_id -r role -o $output_dir
+
+7.How to download a table which has been uploaded before
+ > python fate_flow_client.py -f download -n table_namespace -t table_name -w work_mode -o save_file
+ 
+ work_mode: will be 0 for standalone or 1 for cluster, which depend on what you set in upload config
