@@ -122,7 +122,7 @@ After you submit a job, you can find your job log in ${Your install path}/logs/$
 The logs for each party is collected separately and list in different folders. Inside each folder, the logs for different components are also arranged in different folders. In this way, you can check out the log more specifically and get useful detailed  information.
 
 
-### Some common usage of fate flow
+### Some common usages of fate flow
 #### 1.How to get the output data of each component:
 
  >cd {your_fate_path}/fate_flow
